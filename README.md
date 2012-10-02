@@ -28,3 +28,68 @@ Current Status
 --------------
 
 * 2012-10-02 - Initial release
+
+Installation
+------------
+
+1. Create an Alloy project as per the [Alloy documentation](https://github.com/appcelerator/alloy/blob/master/README.md).
+1. Follow the instructions for adding the [TiTouchDB](https://github.com/pegli/ti_touchdb/wiki) module to your project.
+1. Clone this repo and copy the `alloy/sync/titouchdb.js` file to your project's `app/lib` directory.
+
+Creating a Model
+----------------
+
+Create a new model using `alloy generate model MODELNAME titouchdb`.  This will create a new file named
+`models/MODELNAME.js` that looks like this:
+
+```javascript
+exports.definition = {
+  config: {
+		"adapter": {
+			"type": "titouchdb",
+			"collection_name": "MODELNAME"
+		}
+	},		
+
+	extendModel: function(Model) {		
+		_.extend(Model.prototype, {
+		}); // end extend
+		return Model;
+	},
+	
+	extendCollection: function(Collection) {		
+		_.extend(Collection.prototype, {
+		}); // end extend
+		return Collection;
+	}
+}
+```
+
+Collections in alloy-ti_touchdb map to [TouchDB views](http://guide.couchdb.org/draft/views.html).
+Each model is associated with a design document that holds one or more views used to fetch collections
+of the model.  In order to fetch collections in Alloy, you must specify the design doc name by adding
+a property named `design_doc` to the `adapter` object in the model source file.  You can optionally
+specify the default view to use to fetch collections by adding a `views` property to the `adapter`
+object as well:
+
+```javascript
+  config: {
+    "adapter": {
+      "type": "titouchdb",
+      "collection_name": "MODELNAME",
+      "design_doc": "myddoc",
+      "views": ["default", "by_name"]
+    }
+  },
+```
+
+Optional adapter properties are:
+
+* **modelname** (String)  adds a property to all new documents named `modelname` with the provided
+  value.  This is useful to differentiate document types within the TouchDB database.  The property
+  name "modelname" was chosen for compatibility with [Spine](http://spinejs.com/)'s persistence mechanism.
+* **view_options** (Object) add global options for view queries.  Currently supports `prefetch`, `limit`, 
+  `skip`, `descending`, and `group_level`.  See the [TiTouchDB docs](https://github.com/pegli/ti_touchdb/blob/master/mobile/noarch/documentation/index.md)
+  for information about these parameters.
+
+
