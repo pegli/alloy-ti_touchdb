@@ -4,7 +4,7 @@
 
 var _ = require('alloy/underscore'),
     server = require('com.obscure.titouchdb'),
-    db = server.databaseNamed('knitminder'), // TODO provision with Syncpoint!
+    db,
     modelname;
 
 
@@ -13,7 +13,7 @@ var _ = require('alloy/underscore'),
  * @param {Object} name
  * @param {Object} options
  */
-function query_view(design_doc, name, options) {
+function query_view(db, design_doc, name, options) {
   var opts = options || {};
   
   var ddoc = db.designDocumentWithName(design_doc);
@@ -38,6 +38,20 @@ function query_view(design_doc, name, options) {
 
 
 function InitAdapter(config) {
+  if (!config || !config.adapter) {
+    Ti.API.error('missing adapter configuration');
+    return;
+  }
+  
+  if (!_.isString(config.adapter.dbname) || config.adapter.dbname.length < 1) {
+    Ti.API.error('Missing required adapter configuration property: dbname');
+  }
+  
+  if (!_.isString(config.adapter.collection_name) || config.adapter.collection_name.length < 1) {
+    Ti.API.error('Missing required adapter configuration property: collection_name');
+  }
+  
+  db = server.databaseNamed(config.adapter.dbname);
   db.ensureCreated();
   return {};
 }
@@ -59,12 +73,12 @@ function Sync(model, method, options) {
         var collection = model; // just to clear things up 
         
         // collection
-        var ddoc = collection.config.adapter.design_doc;
+        var ddoc = collection.config.adapter.collection_name;
         var view = opts.view || collection.config.adapter.views[0];
         
         // add default view options from model
         opts = _.defaults(opts, collection.config.adapter.view_options);
-        var query = query_view(ddoc, view, opts);
+        var query = query_view(db, ddoc, view, opts);
         if (!query) {
           break;
         }

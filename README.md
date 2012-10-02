@@ -65,10 +65,14 @@ exports.definition = {
 }
 ```
 
+Edit the model source file and add a new property named `dbname` to the `adapter` object.  The
+value of this property should be the name of the local TouchDB database that you will be using
+to store this model.
+
 Collections in alloy-ti_touchdb map to [TouchDB views](http://guide.couchdb.org/draft/views.html).
 Each model is associated with a design document that holds one or more views used to fetch collections
-of the model.  In order to fetch collections in Alloy, you must specify the design doc name by adding
-a property named `design_doc` to the `adapter` object in the model source file.  You can optionally
+of the model.  In order to fetch collections in Alloy, you must specify the design doc name by changing
+the value of the `collection_name` property to the name of the design document.  You can optionally
 specify the default view to use to fetch collections by adding a `views` property to the `adapter`
 object as well:
 
@@ -76,8 +80,8 @@ object as well:
   config: {
     "adapter": {
       "type": "titouchdb",
-      "collection_name": "MODELNAME",
-      "design_doc": "myddoc",
+      "dbname": "mydb",
+      "collection_name": "myddoc",
       "views": ["default", "by_name"]
     }
   },
