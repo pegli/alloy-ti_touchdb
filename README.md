@@ -34,7 +34,7 @@ Installation
 
 1. Create an Alloy project as per the [Alloy documentation](https://github.com/appcelerator/alloy/blob/master/README.md).
 1. Follow the instructions for adding the [TiTouchDB](https://github.com/pegli/ti_touchdb/wiki) module to your project.
-1. Clone this repo and copy the `alloy/sync/titouchdb.js` file to your project's `app/lib` directory.
+1. Clone this repo and copy the `alloy/sync/titouchdb.js` file to your project's `app/lib/alloy/sync` directory.
 
 Creating a Model
 ----------------
