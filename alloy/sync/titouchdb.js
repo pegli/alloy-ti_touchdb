@@ -66,6 +66,7 @@ function Sync(model, method, options) {
         props.modelname = model.config.adapter.modelname;
         var doc = db.untitledDocument();
         doc.putProperties(props);
+        model.trigger('create');
         break;
 
     case 'read':
@@ -113,6 +114,7 @@ function Sync(model, method, options) {
     case 'update':
       var doc = db.documentWithID(model.id);
       doc.putProperties(model.toJSON());
+      model.trigger('update');
       break;
     
     case 'delete':
@@ -120,6 +122,7 @@ function Sync(model, method, options) {
         var doc = db.documentWithID(model.id);
         doc.deleteDocument();
         model.id = null;
+        model.trigger('destroy');
       }
       break;
   }  
@@ -138,7 +141,7 @@ module.exports.beforeModelCreate = function(config) {
 module.exports.afterModelCreate = function(Model) {
   Model = Model || {};
   
-  Model.prototype.idAttribute = '_id'; // all TouchDB model objects use _id
+  Model.prototype.idAttribute = '_id'; // true for all TouchDB documents
   Model.prototype.config.Model = Model; // needed for fetch operations to initialize the collection from persistent store
   
   return Model;
