@@ -27,6 +27,7 @@ your app's data to and from your server.
 Current Status
 --------------
 
+* 2012-10-26 - Changes to the view specification in the model config (see below)
 * 2012-10-02 - Initial release
 
 Installation
@@ -47,7 +48,7 @@ exports.definition = {
   config: {
 		"adapter": {
 			"type": "titouchdb",
-			"collection_name": "MODELNAME"
+			"collection_name": "MODELNAME",
 		}
 	},		
 
@@ -72,9 +73,9 @@ to store this model.
 Collections in alloy-ti_touchdb map to [TouchDB views](http://guide.couchdb.org/draft/views.html).
 Each model is associated with a design document that holds one or more views used to fetch collections
 of the model.  In order to fetch collections in Alloy, you must specify the design doc name by changing
-the value of the `collection_name` property to the name of the design document.  You can optionally
-specify the default view to use to fetch collections by adding a `views` property to the `adapter`
-object as well:
+the value of the `collection_name` property to the name of the design document and specify one or more
+views in the `views` property.  Each view is defined as an object with a `name` and `map` property
+and an optional `reduce` property:
 
 ```javascript
   config: {
@@ -82,7 +83,10 @@ object as well:
       "type": "titouchdb",
       "dbname": "mydb",
       "collection_name": "myddoc",
-      "views": ["default", "by_name"]
+      "views": [
+        { "name": "default", "map": "function (doc) { emit(doc.title, null); }" },
+        { "name": "by_name", "map": "function (doc) { emit([doc.last_name, doc.first_name], null); }" }
+      ]
     }
   },
 ```
