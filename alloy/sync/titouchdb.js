@@ -122,6 +122,8 @@ function Sync(model, method, options) {
       break;
 
     case 'update':
+      var props = model.toJSON();
+      props.modelname = model.config.adapter.modelname;
       var doc = db.documentWithID(model.id);
       doc.putProperties(model.toJSON());
       model.trigger('update');
