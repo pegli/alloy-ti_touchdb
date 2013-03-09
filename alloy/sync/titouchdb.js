@@ -67,7 +67,7 @@ function InitAdapter(config) {
 }
 
 
-function Sync(model, method, options) {
+function Sync(method, model, options) {
   var opts = options || {};
   
   switch (method) {
@@ -85,7 +85,7 @@ function Sync(model, method, options) {
         
         // collection
         var ddoc = collection.config.adapter.collection_name;
-        var view = opts.view || collection.config.adapter.views[0].name;
+        var view = opts.view || collection.config.adapter.views[0];
         
         // add default view options from model
         opts = _.defaults(opts, collection.config.adapter.view_options);
@@ -122,8 +122,6 @@ function Sync(model, method, options) {
       break;
 
     case 'update':
-      var props = model.toJSON();
-      props.modelname = model.config.adapter.modelname;
       var doc = db.documentWithID(model.id);
       doc.putProperties(model.toJSON());
       model.trigger('update');
